@@ -18,6 +18,7 @@ package ch.rasc.sse.eventbus.config;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -55,6 +56,9 @@ public class DefaultSseEventBusConfiguration {
 	@Autowired(required = false)
 	protected SubscriptionRegistry subscriptionRegistry;
 
+	@Autowired(required = false)
+	protected MeterRegistry meterRegistry;
+
 	@Bean
 	public SseEventBus eventBus() {
 		SseEventBusConfigurer config = this.configurer;
@@ -69,7 +73,7 @@ public class DefaultSseEventBusConfiguration {
 			registry = new DefaultSubscriptionRegistry();
 		}
 
-		SseEventBus sseEventBus = new SseEventBus(config, registry);
+		SseEventBus sseEventBus = new SseEventBus(config, registry, meterRegistry);
 
 		List<DataObjectConverter> converters = this.dataObjectConverters;
 		if (converters == null) {

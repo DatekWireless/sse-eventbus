@@ -83,6 +83,13 @@
 			<scope>provided</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-core</artifactId>
+			<version>1.1.4</version>
+			<scope>provided</scope>
+		</dependency>
+
 		<!-- TEST dependencies -->
 		<dependency>
 			<groupId>junit</groupId>

@@ -50,6 +50,10 @@ public interface SseEvent {
 
 	Optional<String> comment();
 
+	@Value.Default default long timestamp() {
+		return System.currentTimeMillis();
+	}
+
 	/**
 	 * Creates a SseEvent that just contains the data. The data will be converted when
 	 * it's not a String instance.
