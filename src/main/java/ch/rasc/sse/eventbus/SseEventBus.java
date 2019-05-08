@@ -1,12 +1,12 @@
 /**
  * Copyright 2016-2018 the original author or authors.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -59,7 +59,7 @@ public class SseEventBus {
 	private final BlockingQueue<ClientEvent> sendQueue;
 
 	public SseEventBus(SseEventBusConfigurer configurer,
-			SubscriptionRegistry subscriptionRegistry) {
+					   SubscriptionRegistry subscriptionRegistry) {
 
 		this.subscriptionRegistry = subscriptionRegistry;
 
@@ -93,7 +93,7 @@ public class SseEventBus {
 	}
 
 	public SseEmitter createSseEmitter(String clientId, boolean unsubscribe,
-			String... events) {
+									   String... events) {
 		return createSseEmitter(clientId, 180_000L, unsubscribe, false, events);
 	}
 
@@ -102,7 +102,7 @@ public class SseEventBus {
 	}
 
 	public SseEmitter createSseEmitter(String clientId, Long timeout, boolean unsubscribe,
-			String... events) {
+									   String... events) {
 		return createSseEmitter(clientId, timeout, unsubscribe, false, events);
 	}
 
@@ -117,7 +117,7 @@ public class SseEventBus {
 	 * @return a new SseEmitter instance
 	 */
 	public SseEmitter createSseEmitter(String clientId, Long timeout, boolean unsubscribe,
-			boolean completeAfterMessage, String... events) {
+									   boolean completeAfterMessage, String... events) {
 		SseEmitter emitter = new SseEmitter(timeout);
 		emitter.onTimeout(emitter::complete);
 		registerClient(clientId, emitter, completeAfterMessage);
@@ -139,13 +139,12 @@ public class SseEventBus {
 	}
 
 	public void registerClient(String clientId, SseEmitter emitter,
-			boolean completeAfterMessage) {
+							   boolean completeAfterMessage) {
 		Client client = this.clients.get(clientId);
 		if (client == null) {
 			this.clients.put(clientId,
 					new Client(clientId, emitter, completeAfterMessage));
-		}
-		else {
+		} else {
 			client.updateEmitter(emitter);
 		}
 	}
@@ -213,13 +212,12 @@ public class SseEventBus {
 				for (Client client : this.clients.values()) {
 					if (!event.excludeClientIds().contains(client.getId())
 							&& this.subscriptionRegistry.isClientSubscribedToEvent(
-									client.getId(), event.event())) {
+							client.getId(), event.event())) {
 						this.sendQueue
 								.put(new ClientEvent(client, event, convertedValue));
 					}
 				}
-			}
-			else {
+			} else {
 				for (String clientId : event.clientIds()) {
 					if (this.subscriptionRegistry.isClientSubscribedToEvent(clientId,
 							event.event())) {
@@ -228,8 +226,7 @@ public class SseEventBus {
 					}
 				}
 			}
-		}
-		catch (InterruptedException e) {
+		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -244,8 +241,7 @@ public class SseEventBus {
 					sseClientEvent.getSseEvent().event())) {
 				try {
 					this.sendQueue.put(sseClientEvent);
-				}
-				catch (InterruptedException e) {
+				} catch (InterruptedException e) {
 					throw new RuntimeException(e);
 				}
 			}
@@ -261,18 +257,15 @@ public class SseEventBus {
 					boolean ok = sendEventToClient(clientEvent);
 					if (ok) {
 						client.updateLastTransfer();
-					}
-					else {
+					} else {
 						clientEvent.incErrorCounter();
 						this.errorQueue.put(clientEvent);
 					}
-				}
-				else {
+				} else {
 					this.unregisterClient(clientEvent.getClient().getId());
 				}
 			}
-		}
-		catch (InterruptedException e) {
+		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -285,8 +278,7 @@ public class SseEventBus {
 				client.sseEmitter().complete();
 			}
 			return true;
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			return false;
 		}
 

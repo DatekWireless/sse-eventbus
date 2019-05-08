@@ -5,3 +5,6 @@
 /dependency-reduced-pom.xml
 /.factorypath
 /.apt_generated/
+.idea
+*.iml
+*.jar

@@ -1,12 +1,12 @@
 /**
  * Copyright 2016-2018 the original author or authors.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,15 +15,10 @@
  */
 package ch.rasc.sse.eventbus;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
-
-import java.io.IOException;
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,10 +29,14 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
+import java.io.IOException;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.fail;
 
 @SuppressWarnings("resource")
 @RunWith(SpringRunner.class)
@@ -52,6 +51,55 @@ public class IntegrationTest {
 
 	@Autowired
 	private SseEventBus eventBus;
+
+	private static OkHttpClient createHttpClient() {
+		return createHttpClient(10, TimeUnit.SECONDS);
+	}
+
+	private static OkHttpClient createHttpClient(long timeout, TimeUnit timeUnit) {
+		return new OkHttpClient.Builder().connectTimeout(timeout, timeUnit)
+				.writeTimeout(timeout, timeUnit).readTimeout(timeout, timeUnit).build();
+	}
+
+	private static void assertSseResponseWithException(Response response) {
+		assertThat(response.isSuccessful()).isTrue();
+		try {
+			ResponseBody body = response.body();
+			if (body != null) {
+				body.string();
+				fail("request the body should fail");
+			} else {
+				fail("body should not be null");
+			}
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+
+	private static void assertSseResponse(Response response, String... lines) {
+		assertThat(response.isSuccessful()).isTrue();
+		String sse;
+		try {
+			ResponseBody body = response.body();
+			if (body != null) {
+				sse = body.string();
+				String[] splittedSse = sse.split("\n");
+				assertThat(splittedSse).containsExactly(lines);
+			} else {
+				fail("body should not be null");
+			}
+		} catch (IOException e) {
+			fail(e.getMessage());
+		}
+	}
+
+	private static void sleep(long value, TimeUnit timeUnit) {
+		try {
+			timeUnit.sleep(value);
+		} catch (InterruptedException e) {
+			// nothing here
+		}
+	}
 
 	@Before
 	public void cleanup() {
@@ -492,64 +540,18 @@ public class IntegrationTest {
 		return "http://localhost:" + this.port + path;
 	}
 
-	private static OkHttpClient createHttpClient() {
-		return createHttpClient(10, TimeUnit.SECONDS);
-	}
-
-	private static OkHttpClient createHttpClient(long timeout, TimeUnit timeUnit) {
-		return new OkHttpClient.Builder().connectTimeout(timeout, timeUnit)
-				.writeTimeout(timeout, timeUnit).readTimeout(timeout, timeUnit).build();
-	}
-
-	private static void assertSseResponseWithException(Response response) {
-		assertThat(response.isSuccessful()).isTrue();
-		try {
-			ResponseBody body = response.body();
-			if (body != null) {
-				body.string();
-				fail("request the body should fail");
-			}
-			else {
-				fail("body should not be null");
-			}
-		}
-		catch (IOException e) {
-			System.out.println(e.getMessage());
-		}
-	}
-
-	private static void assertSseResponse(Response response, String... lines) {
-		assertThat(response.isSuccessful()).isTrue();
-		String sse;
-		try {
-			ResponseBody body = response.body();
-			if (body != null) {
-				sse = body.string();
-				String[] splittedSse = sse.split("\n");
-				assertThat(splittedSse).containsExactly(lines);
-			}
-			else {
-				fail("body should not be null");
-			}
-		}
-		catch (IOException e) {
-			fail(e.getMessage());
-		}
-	}
-
 	private Response registerSubscribe(String clientId, String eventName)
 			throws IOException {
 		return registerSubscribe(clientId, eventName, false);
 	}
 
 	private Response registerSubscribe(String clientId, String eventName,
-			boolean shortTimeout) throws IOException {
+									   boolean shortTimeout) throws IOException {
 
 		OkHttpClient client;
 		if (shortTimeout) {
 			client = createHttpClient(500, TimeUnit.MILLISECONDS);
-		}
-		else {
+		} else {
 			client = createHttpClient();
 		}
 		Request request = new Request.Builder().get()
@@ -582,15 +584,6 @@ public class IntegrationTest {
 		Request request = new Request.Builder().get()
 				.url(testUrl("/registerOnly/" + clientId + "/" + eventName)).build();
 		return client.newCall(request).execute();
-	}
-
-	private static void sleep(long value, TimeUnit timeUnit) {
-		try {
-			timeUnit.sleep(value);
-		}
-		catch (InterruptedException e) {
-			// nothing here
-		}
 	}
 
 }

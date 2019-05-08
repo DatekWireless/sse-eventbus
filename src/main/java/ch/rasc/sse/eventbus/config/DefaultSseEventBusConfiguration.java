@@ -1,12 +1,12 @@
 /**
  * Copyright 2016-2018 the original author or authors.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -60,7 +60,8 @@ public class DefaultSseEventBusConfiguration {
 		SseEventBusConfigurer config = this.configurer;
 		if (config == null) {
 			config = new SseEventBusConfigurer() {
-				/* nothing_here */ };
+				/* nothing_here */
+			};
 		}
 
 		SubscriptionRegistry registry = this.subscriptionRegistry;
@@ -77,8 +78,7 @@ public class DefaultSseEventBusConfiguration {
 
 		if (this.objectMapper != null) {
 			converters.add(new JacksonDataObjectConverter(this.objectMapper));
-		}
-		else {
+		} else {
 			converters.add(new DefaultDataObjectConverter());
 		}
 
