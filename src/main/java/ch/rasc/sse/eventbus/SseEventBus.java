@@ -77,6 +77,8 @@ public class SseEventBus {
 		this.sendQueue = configurer.sendQueue();
 
 		this.taskScheduler.submit(this::eventLoop);
+		this.taskScheduler.submit(this::eventLoop);
+
 		this.taskScheduler.scheduleWithFixedDelay(this::reScheduleFailedEvents, 0,
 				configurer.schedulerDelay().toMillis(), TimeUnit.MILLISECONDS);
 		this.taskScheduler.scheduleWithFixedDelay(this::cleanUpClients, 0,
