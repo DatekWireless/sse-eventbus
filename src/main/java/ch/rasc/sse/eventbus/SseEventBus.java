@@ -32,6 +32,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PreDestroy;
 
+import io.micrometer.core.instrument.LongTaskTimer;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
 import org.springframework.context.event.EventListener;
@@ -60,7 +61,7 @@ public class SseEventBus {
 
 	private final BlockingQueue<ClientEvent> sendQueue;
 
-	private Timer latencyTimer;
+	private LongTaskTimer latencyTimer;
 
 	public SseEventBus(SseEventBusConfigurer configurer,
 					   SubscriptionRegistry subscriptionRegistry, MeterRegistry meterRegistry) {
@@ -85,7 +86,7 @@ public class SseEventBus {
 				configurer.clientExpirationJobDelay().toMillis(), TimeUnit.MILLISECONDS);
 
 		if (meterRegistry != null) {
-			latencyTimer = meterRegistry.timer("sse.send.latency");
+			latencyTimer = meterRegistry.more().longTaskTimer("sse.send.latency");
 			meterRegistry.gaugeCollectionSize("sse.queue.send", Collections.emptyList(), sendQueue);
 			meterRegistry.gaugeCollectionSize("sse.queue.error", Collections.emptyList(), errorQueue);
 		}
@@ -269,7 +270,7 @@ public class SseEventBus {
 					boolean ok = sendEventToClient(clientEvent);
 					if (ok) {
 						if (latencyTimer != null) {
-							latencyTimer.record(clientEvent.getSseEvent().timestamp(), TimeUnit.MILLISECONDS);
+							latencyTimer.duration(clientEvent.getSseEvent().timestamp(), TimeUnit.MILLISECONDS);
 						}
 						client.updateLastTransfer();
 					} else {
