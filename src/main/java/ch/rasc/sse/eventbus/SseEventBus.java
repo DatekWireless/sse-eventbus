@@ -34,7 +34,6 @@ import javax.annotation.PreDestroy;
 
 import io.micrometer.core.instrument.LongTaskTimer;
 import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.Timer;
 import org.springframework.context.event.EventListener;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -64,7 +63,7 @@ public class SseEventBus {
 	private LongTaskTimer latencyTimer;
 
 	public SseEventBus(SseEventBusConfigurer configurer,
-					   SubscriptionRegistry subscriptionRegistry, MeterRegistry meterRegistry) {
+			SubscriptionRegistry subscriptionRegistry, MeterRegistry meterRegistry) {
 
 		this.subscriptionRegistry = subscriptionRegistry;
 
