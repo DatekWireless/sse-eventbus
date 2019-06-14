@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -37,13 +37,13 @@ public class TestController {
 
 	@GetMapping("/register/{id}/{event}")
 	public SseEmitter eventbus(@PathVariable("id") String id,
-							   @PathVariable("event") String event) {
+			@PathVariable("event") String event) {
 		return this.eventBus.createSseEmitter(id, 3_000L, event.split(","));
 	}
 
 	@GetMapping("/registerOnly/{id}/{event}")
 	public SseEmitter eventbusOnly(@PathVariable("id") String id,
-								   @PathVariable("event") String event) {
+			@PathVariable("event") String event) {
 		return this.eventBus.createSseEmitter(id, 3_000L, true, event.split(","));
 	}
 
@@ -56,7 +56,7 @@ public class TestController {
 	@ResponseBody
 	@GetMapping("/subscribe/{id}/{event}")
 	public void subscribe(@PathVariable("id") String id,
-						  @PathVariable("event") String event) {
+			@PathVariable("event") String event) {
 		String[] splittedEvents = event.split(",");
 		for (String e : splittedEvents) {
 			this.eventBus.subscribe(id, e);
@@ -66,7 +66,7 @@ public class TestController {
 	@ResponseBody
 	@GetMapping("/unsubscribe/{id}/{event}")
 	public void unsubscribe(@PathVariable("id") String id,
-							@PathVariable("event") String event) {
+			@PathVariable("event") String event) {
 		String[] splittedEvents = event.split(",");
 		for (String e : splittedEvents) {
 			this.eventBus.unsubscribe(id, e);

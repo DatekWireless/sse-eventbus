@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -59,7 +59,6 @@ public class SseEventBusTest {
 
 	@Autowired
 	private SseEventBus eventBus;
-
 
 	@Before
 	public void cleanup() {
@@ -249,7 +248,8 @@ public class SseEventBusTest {
 	private static void sleep(long value, TimeUnit timeUnit) {
 		try {
 			timeUnit.sleep(value);
-		} catch (InterruptedException e) {
+		}
+		catch (InterruptedException e) {
 			// nothing here
 		}
 	}
