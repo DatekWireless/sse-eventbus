@@ -1,12 +1,12 @@
 /**
  * Copyright 2016-2018 the original author or authors.
- * <p>
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,10 +15,15 @@
  */
 package ch.rasc.sse.eventbus;
 
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.fail;
+
+import java.io.IOException;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,14 +34,10 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.io.IOException;
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 @SuppressWarnings("resource")
 @RunWith(SpringRunner.class)
@@ -90,14 +91,6 @@ public class IntegrationTest {
 			}
 		} catch (IOException e) {
 			fail(e.getMessage());
-		}
-	}
-
-	private static void sleep(long value, TimeUnit timeUnit) {
-		try {
-			timeUnit.sleep(value);
-		} catch (InterruptedException e) {
-			// nothing here
 		}
 	}
 
@@ -584,6 +577,14 @@ public class IntegrationTest {
 		Request request = new Request.Builder().get()
 				.url(testUrl("/registerOnly/" + clientId + "/" + eventName)).build();
 		return client.newCall(request).execute();
+	}
+
+	private static void sleep(long value, TimeUnit timeUnit) {
+		try {
+			timeUnit.sleep(value);
+		} catch (InterruptedException e) {
+			// nothing here
+		}
 	}
 
 }
