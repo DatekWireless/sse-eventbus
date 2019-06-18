@@ -70,6 +70,13 @@ public interface SseEventBusConfigurer {
 	}
 
 	/**
+	 * Number of threads that push out SSE events to clients.
+	 */
+	default int noOfWorkerThreads() {
+		return 1;
+	}
+
+	/**
 	 * An executor that schedules and runs the internal jobs
 	 * <p>
 	 * By default this is an instance created with
