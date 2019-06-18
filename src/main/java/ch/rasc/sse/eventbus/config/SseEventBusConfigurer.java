@@ -81,9 +81,10 @@ public interface SseEventBusConfigurer {
 	 * <p>
 	 * By default this is an instance created with
 	 * {@link Executors#newScheduledThreadPool(2)}
+	 * @param minimumThreadCount the minimum number of threads in the pool that is required
 	 */
-	default ScheduledExecutorService taskScheduler() {
-		return Executors.newScheduledThreadPool(2);
+	default ScheduledExecutorService taskScheduler(int minimumThreadCount) {
+		return Executors.newScheduledThreadPool(minimumThreadCount);
 	}
 
 	default BlockingQueue<ClientEvent> errorQueue() {

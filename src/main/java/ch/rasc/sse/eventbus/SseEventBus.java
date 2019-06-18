@@ -67,7 +67,7 @@ public class SseEventBus {
 
 		this.subscriptionRegistry = subscriptionRegistry;
 
-		this.taskScheduler = configurer.taskScheduler();
+		this.taskScheduler = configurer.taskScheduler(configurer.noOfWorkerThreads() + 1);
 		this.noOfSendResponseTries = configurer.noOfSendResponseTries();
 		this.clientExpiration = configurer.clientExpiration();
 
