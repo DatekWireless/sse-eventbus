@@ -2,4 +2,4 @@
 set -e
 . $DEVTOOLS_HOME/common_functions.sh
 
-tag_release $1
+tag_release metrics
