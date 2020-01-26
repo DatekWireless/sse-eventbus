@@ -20,6 +20,14 @@
 	<url>https://github.com/ralscha/sse-eventbus/</url>
 	<description>A simple eventbus library to track connected sse clients and broadcast messages</description>
 
+	<distributionManagement>
+		<repository>
+			<id>github-sse-eventbus</id>
+			<name>DatekWireless GitHub Apache Maven Packages</name>
+			<url>https://maven.pkg.github.com/DatekWireless/sse-eventbus</url>
+		</repository>
+	</distributionManagement>
+
 	<developers>
 		<developer>
 			<name>Ralph Schaer</name>
